@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Proline Painting & Drywall - Your Interior & Exterior Specialists.">
+    <title>Proline Painting & Drywall | Architectural Finishes</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==========================================================================
+           1. DESIGN SYSTEM & VARIABLES
+           ========================================================================== */
+        :root {
+            --bg-primary: #f4f7f9;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #eef2f6;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent-light: #4db8ff;
+            --accent: #0066cc; 
+            --accent-dark: #004c99;
+            --accent-gradient: linear-gradient(135deg, #005bb5 0%, #0099ff 100%);
+            --border: #cbd5e1;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 102, 204, 0.05);
+            --shadow-md: 0 12px 20px -3px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 25px 40px -5px rgba(0, 102, 204, 0.15);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 32px;
+            --transition-fast: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-slow: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a0f1c;
+            --bg-secondary: #111827;
+            --bg-tertiary: #1f2937;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --glass-bg: rgba(10, 15, 28, 0.85);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 12px 25px -3px rgba(0, 0, 0, 0.6);
+            --shadow-lg: 0 30px 50px -5px rgba(0, 0, 0, 0.8);
+            --accent-gradient: linear-gradient(135deg, #3399ff 0%, #005bb5 100%);
+        }
+
+        /* ==========================================================================
+           2. RESET & BASE STYLES
+           ========================================================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* CORRECCIÓN DE ANCHO TOTAL (Evita el espacio vacío a la derecha) */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body { background-color: var(--bg-primary); color: var(--text-primary); font-family: 'Inter', sans-serif; transition: background-color 0.4s ease, color 0.4s ease; line-height: 1.6; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; }
+        img { max-width: 100%; height: auto; display: block; }
+        ul { list-style: none; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ==========================================================================
+           3. PRELOADER & UTILITIES
+           ========================================================================== */
+        #preloader { position: fixed; inset: 0; background: var(--bg-primary); z-index: 10000; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.6s ease, visibility 0.6s ease; }
+        .loader-brand img { width: 200px; margin-bottom: 30px; animation: pulse 2s infinite; }
+        .loader-bar { width: 160px; height: 4px; background: var(--border); border-radius: 10px; overflow: hidden; position: relative; }
+        .loader-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--accent-gradient); transition: width 0.3s ease; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.03); opacity: 1; } }
+
+        .color-blob { position: absolute; width: 70vw; height: 70vw; background: var(--accent-gradient); filter: blur(80px); opacity: 0.06; pointer-events: none; z-index: 0; border-radius: 50%; animation: float 20s infinite alternate ease-in-out; }
+        .blob-1 { top: -5%; right: -20%; }
+        .blob-2 { bottom: 5%; left: -20%; animation-delay: -10s; }
+        @keyframes float { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(40px, 40px) rotate(180deg); } }
+
+        .reveal-on-scroll { opacity: 0; transform: translateY(25px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .section-padding { padding: 60px 5%; max-width: 1440px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        .section-header { text-align: center; margin-bottom: 45px; max-width: 800px; margin-inline: auto; }
+        .section-header h2 { font-size: clamp(2rem, 6vw, 3.5rem); margin-bottom: 15px; }
+        .section-header h2 span { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .section-header p { color: var(--text-secondary); font-size: 1rem; }
+
+        .btn-primary, .btn-outline { padding: 12px 24px; border-radius: 50px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; transition: var(--transition); font-size: 0.95rem; }
+        .btn-primary { background: var(--accent-gradient); color: #fff; border: none; box-shadow: var(--shadow-md); position: relative; overflow: hidden; z-index: 1; }
+        .btn-primary::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0099ff 0%, #005bb5 100%); z-index: -1; transition: opacity 0.3s ease; opacity: 0; }
+        .btn-primary:hover::before { opacity: 1; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); color: #fff; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-primary); }
+        .btn-outline:hover { border-color: var(--accent); background: var(--bg-tertiary); color: var(--accent); }
+
+        /* ==========================================================================
+           4. HEADER & ENHANCED LOGO (Optimizados para Móvil)
+           ========================================================================== */
+        header { position: fixed; top: 0; width: 100%; z-index: 1000; background: transparent; transition: var(--transition); padding: 10px 4%; display: flex; justify-content: space-between; align-items: center; }
+        header.scrolled { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 8px 4%; box-shadow: var(--shadow-md); }
+        
+        .logo-container { display: flex; align-items: center; gap: 8px; transition: var(--transition); }
+        
+        /* Ajustes base de tamaño para Logo en Móviles */
+        .logo-container img { height: 35px; width: auto; border-radius: 8px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .logo-text { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; line-height: 1; text-transform: uppercase; }
+        .logo-text span { color: var(--accent); }
+        [data-theme="dark"] .logo-container img { filter: drop-shadow(0 2px 4px rgba(255,255,255,0.1)) brightness(1.2); }
+
+        /* Botones superiores reducidos para móvil */
+        .nav-tools { display: flex; align-items: center; gap: 8px; }
+        .phone-header { font-weight: 700; color: var(--text-primary); display: none; background: var(--bg-secondary); padding: 8px 16px; border-radius: 30px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); font-size: 0.9rem; }
+        .phone-header i { color: var(--accent); }
+        .phone-header:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow-md); }
+        
+        .theme-toggle, .menu-btn { background: var(--bg-secondary); border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; transition: var(--transition); cursor: pointer; box-shadow: var(--shadow-sm); }
+        
+        .theme-toggle { color: var(--text-primary); width: 34px; height: 34px; border-radius: 50%; font-size: 0.85rem; }
+        .theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: scale(1.05); }
+        
+        .menu-btn { background: var(--text-primary); color: var(--bg-primary); padding: 0 14px; height: 34px; border-radius: 30px; font-weight: 600; font-size: 0.8rem; gap: 6px; }
+        .menu-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+        @media (min-width: 768px) {
+            header { padding: 10px 5%; }
+            header.scrolled { padding: 8px 5%; }
+            .logo-container img { height: 50px; }
+            .logo-text { font-size: 1.9rem; }
+            .theme-toggle, .menu-btn { height: 40px; }
+            .theme-toggle { width: 40px; font-size: 1rem; }
+            .menu-btn { padding: 0 20px; font-size: 0.9rem; }
+            .section-padding { padding: 90px 5%; }
+            .color-blob { filter: blur(140px); opacity: 0.08; width: 45vw; height: 45vw; }
+        }
+        @media (min-width: 1024px) {
+            .phone-header { display: flex; align-items: center; gap: 10px; }
+            .section-padding { padding: 120px 5%; }
+            .btn-primary { padding: 16px 36px; }
+            .btn-outline { padding: 14px 34px; }
+        }
+
+        /* Fullscreen Navigation Menu */
+        .fullscreen-menu { position: fixed; inset: 0; background: var(--bg-secondary); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; padding: 20px; }
+        .fullscreen-menu.active { opacity: 1; pointer-events: auto; }
+        .menu-items { display: flex; flex-direction: column; text-align: center; gap: 24px; }
+        .fullscreen-menu a.menu-link { font-family: 'Syne', sans-serif; font-size: clamp(1.4rem, 4vw, 2.2rem); color: var(--text-primary); letter-spacing: 0.02em; transform: translateY(20px); opacity: 0; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); font-weight: 700; position: relative; display: inline-block; }
+        .fullscreen-menu.active a.menu-link { transform: translateY(0); opacity: 1; }
+        .fullscreen-menu a.menu-link::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 3px; background: var(--accent); transition: width 0.4s ease; }
+        .fullscreen-menu a.menu-link:hover { color: var(--accent); }
+        .fullscreen-menu a.menu-link:hover::after { width: 100%; }
+
+        /* ==========================================================================
+           5. HERO SECTION
+           ========================================================================== */
+        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 90px; padding-bottom: 40px; position: relative; overflow: hidden; }
+        .hero-container { display: flex; flex-direction: column; width: 100%; max-width: 1600px; margin: 0 auto; align-items: center; padding: 0 5%; text-align: center; }
+        .hero-text { width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2; margin-bottom: 40px; }
+        
+        .badge { background: rgba(0, 102, 204, 0.1); color: var(--accent); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; width: fit-content; margin-bottom: 20px; border: 1px solid rgba(0, 102, 204, 0.2); display: flex; align-items: center; gap: 6px; }
+        
+        /* CORRECCIÓN LETRAS DINÁMICAS (Se reduce fuente y fija altura para evitar saltos) */
+        .hero-text h1 { 
+            font-size: clamp(1.6rem, 8vw, 4.5rem); /* Tipografía más amigable con móvil */
+            line-height: 1.25; 
+            margin-bottom: 20px; 
+            min-height: 120px; /* Reserva espacio previniendo que los botones bajen */
+            width: 100%;
+        }
+        
+        .hero-text h1 span.type-wrap { color: transparent; -webkit-text-stroke: 1px var(--text-primary); position: relative; }
+        [data-theme="dark"] .hero-text h1 span.type-wrap { -webkit-text-stroke: 1px var(--text-primary); }
+        .hero-text h1 span.type-wrap::after { content: '|'; color: var(--accent); animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .hero-text p { font-size: 1rem; color: var(--text-secondary); max-width: 550px; margin-bottom: 30px; }
+        .hero-stats { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border); width: 100%; justify-content: center; }
+        .stat-item h4 { font-size: 1.5rem; color: var(--text-primary); }
+        .stat-item p { font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;}
+
+        .hero-visual { width: 100%; position: relative; height: 40vh; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); transform: translateZ(0); }
+        .hero-visual::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%); z-index: 1; }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.02); transition: transform 15s cubic-bezier(0.16, 1, 0.3, 1); }
+        
+        .experience-badge { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--bg-secondary); padding: 12px 20px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); z-index: 2; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); width: max-content; max-width: 90%; }
+        .experience-badge i { font-size: 1.8rem; color: var(--accent); }
+        .experience-badge div h5 { font-size: 0.9rem; margin: 0; }
+        .experience-badge div p { font-size: 0.75rem; color: var(--text-secondary); margin: 0; }
+
+        @media (min-width: 768px) {
+            .hero-text h1 { min-height: 140px; }
+            .stat-item h4 { font-size: 1.8rem; }
+        }
+
+        @media (min-width: 992px) {
+            .hero { padding-top: 110px; padding-bottom: 60px; }
+            .hero-container { flex-direction: row; text-align: left; }
+            .hero-text { flex: 1.2; align-items: flex-start; margin-bottom: 0; padding-right: 40px; }
+            .hero-text h1 { min-height: auto; } /* En PC no hace falta forzar altura */
+            .hero-stats { justify-content: flex-start; gap: 40px; margin-top: 40px; padding-top: 25px; }
+            .hero-stats .stat-item h4 { font-size: 2.2rem; }
+            .hero-stats .stat-item p { font-size: 0.85rem; }
+            .hero-text p { font-size: 1.2rem; margin-bottom: 40px; }
+            .hero-visual { flex: 1; height: 70vh; }
+            .hero:hover .hero-img { transform: scale(1.10); }
+            .experience-badge { bottom: 30px; left: -30px; transform: none; animation: floatBadge 6s ease-in-out infinite; }
+        }
+        @keyframes floatBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        /* ==========================================================================
+           6. SERVICES & BENTO GRID
+           ========================================================================== */
+        .bento-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .bento-item { background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: var(--transition); overflow: hidden; position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 220px; }
+        .bento-item:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: var(--shadow-lg); }
+
+        .bento-icon { font-size: 2rem; color: var(--accent); margin-bottom: 20px; width: 50px; height: 50px; background: var(--bg-tertiary); border-radius: 14px; display: flex; justify-content: center; align-items: center; transition: var(--transition); }
+        .bento-item:hover .bento-icon { background: var(--accent); color: #fff; transform: scale(1.05); }
+        .bento-item h3 { font-size: 1.25rem; margin-bottom: 8px; z-index: 2; position: relative; }
+        .bento-item p { color: var(--text-secondary); font-size: 0.9rem; z-index: 2; line-height: 1.5; position: relative; }
+        
+        .bento-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.04; z-index: 1; transition: var(--transition-slow); filter: grayscale(100%); }
+        .bento-item:hover .bento-img { opacity: 0.15; transform: scale(1.06); filter: grayscale(0%); }
+        [data-theme="dark"] .bento-img { opacity: 0.1; }
+
+        .service-list { margin-top: 15px; display: grid; grid-template-columns: 1fr; gap: 8px; position: relative; z-index: 2; }
+        .service-list li { font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+        .service-list li i { color: var(--accent); font-size: 0.75rem; }
+
+        @media (min-width: 576px) { .service-list { grid-template-columns: 1fr 1fr; } }
+        @media (min-width: 768px) {
+            .bento-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .bento-item { padding: 30px; min-height: 250px; }
+            .span-2-col-md { grid-column: span 2; }
+        }
+        @media (min-width: 1024px) {
+            .bento-grid { grid-template-columns: repeat(4, 1fr); grid-auto-rows: 280px; gap: 24px; }
+            .bento-item h3 { font-size: 1.4rem; }
+            .bento-icon { font-size: 2.5rem; width: 60px; height: 60px; }
+            .span-2-col { grid-column: span 2; }
+            .span-4-col { grid-column: span 4; flex-direction: row; align-items: center; gap: 40px; padding: 50px;}
+            .span-2-row { grid-row: span 2; }
+            .bento-item:hover .bento-icon { transform: scale(1.1) rotate(5deg); }
+        }
+
+        /* ==========================================================================
+           7. GALLERY SECTION
+           ========================================================================== */
+        .filter-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 35px; flex-wrap: wrap; }
+        .filter-btn { background: var(--bg-secondary); border: 1px solid var(--border); padding: 8px 18px; border-radius: 30px; color: var(--text-primary); font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
+        .filter-btn.active, .filter-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .gallery-item { position: relative; border-radius: var(--radius-md); overflow: hidden; aspect-ratio: 4 / 3; box-shadow: var(--shadow-sm); border: 1px solid var(--border); cursor: pointer; transition: opacity 0.4s ease, transform 0.4s ease; }
+        .gallery-item.hide { display: none; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition-slow); }
+        .gallery-item:hover img { transform: scale(1.08); }
+
+        .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 51, 102, 0.9) 0%, rgba(0,0,0,0.2) 100%); opacity: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; transition: opacity 0.4s ease; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        .gallery-overlay h4 { color: #fff; font-size: 1.2rem; margin-bottom: 4px; }
+        .gallery-overlay p { color: var(--accent-light); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        @media (min-width: 576px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
+        @media (min-width: 992px) {
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 24px; }
+            .gallery-overlay { padding: 30px; }
+            .gallery-overlay h4 { font-size: 1.4rem; }
+            .gallery-overlay p { font-size: 0.9rem; }
+        }
+
+        /* Lightbox */
+        .lightbox { position: fixed; inset: 0; background: rgba(10, 15, 28, 0.98); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .lightbox.active { opacity: 1; pointer-events: auto; }
+        .lightbox-content { max-width: 92%; max-height: 80vh; border-radius: var(--radius-sm); box-shadow: 0 30px 60px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); object-fit: contain; }
+        .lightbox.active .lightbox-content { transform: scale(1); }
+        .lightbox-close { position: absolute; top: 24px; right: 24px; color: white; font-size: 2rem; cursor: pointer; transition: color 0.3s; z-index: 2001; }
+        @media (min-width: 768px) { .lightbox-close { top: 40px; right: 40px; font-size: 2.5rem; } }
+
+        /* ==========================================================================
+           8. VIDEO CAROUSEL SECTION
+           ========================================================================== */
+        .carousel-outer-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+        .video-carousel { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding: 10px 0; width: 100%; }
+        .video-carousel::-webkit-scrollbar { display: none; }
+        .video-card { flex: 0 0 88%; scroll-snap-align: start; position: relative; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); background: var(--bg-secondary); border: 1px solid var(--border); transition: var(--transition-fast); }
+        .video-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+        .video-thumbnail-container { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+        .video-thumb-img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition-slow); opacity: 0.9; }
+        .video-card:hover .video-thumb-img { transform: scale(1.05); opacity: 1; }
+
+        .youtube-redirect-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff0000; color: #ffffff; width: 65px; height: 46px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; box-shadow: 0 8px 20px rgba(255, 0, 0, 0.4); transition: var(--transition-fast); border: none; cursor: pointer; z-index: 5; }
+        .video-card:hover .youtube-redirect-btn { background: #cc0000; transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 12px 25px rgba(255, 0, 0, 0.6); }
+        .video-description-box { padding: 20px; }
+        .video-description-box h3 { font-size: 1.15rem; margin-bottom: 6px; font-weight: 700; }
+        .video-description-box p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; }
+
+        .carousel-control-arrow { position: absolute; z-index: 10; background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); width: 46px; height: 46px; border-radius: 50%; cursor: pointer; display: none; justify-content: center; align-items: center; box-shadow: var(--shadow-md); transition: var(--transition-fast); }
+        .carousel-control-arrow:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .carousel-control-arrow.left-arrow { left: -20px; }
+        .carousel-control-arrow.right-arrow { right: -20px; }
+
+        @media (min-width: 640px) { .video-card { flex: 0 0 48%; } }
+        @media (min-width: 1024px) {
+            .video-carousel { gap: 24px; }
+            .video-card { flex: 0 0 calc(33.333% - 16px); }
+            .carousel-control-arrow { display: flex; }
+        }
+
+        /* ==========================================================================
+           9. ESTIMATOR WIZARD
+           ========================================================================== */
+        .estimator-wrapper { display: flex; flex-direction: column; gap: 40px; }
+        .estimator-info { width: 100%; }
+        .estimator-info h3 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 15px; }
+        .estimator-info p { color: var(--text-secondary); margin-bottom: 25px; font-size: 1rem; }
+        .check-list li { margin-bottom: 12px; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; color: var(--text-primary); font-weight: 500; }
+        .check-list li i { color: #10b981; }
+
+        .wizard-container { width: 100%; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-md); position: relative; overflow: hidden; }
+        .progress-bar { width: 100%; height: 6px; background: var(--bg-tertiary); position: absolute; top: 0; left: 0; }
+        .progress-fill { height: 100%; width: 33.33%; background: var(--accent-gradient); transition: width 0.4s ease; }
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; animation: fadeInStep 0.4s ease; }
+        @keyframes fadeInStep { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 15px; }
+        .option-card { background: var(--bg-primary); border: 2px solid transparent; border-radius: var(--radius-md); padding: 20px; cursor: pointer; transition: var(--transition-fast); display: flex; flex-direction: column; gap: 4px; }
+        .option-card:hover { border-color: var(--border); background: var(--bg-tertiary); }
+        .option-card.selected { border-color: var(--accent); background: rgba(0, 102, 204, 0.05); }
+        .option-card i { font-size: 1.8rem; color: var(--accent); margin-bottom: 6px; }
+        .option-card h4 { font-size: 1.1rem; font-weight: 700; }
+
+        .slider-box { padding: 30px 0; text-align: center; }
+        input[type="range"] { width: 100%; accent-color: var(--accent); height: 6px; border-radius: 4px; outline: none; background: var(--border); -webkit-appearance: none; cursor: pointer; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: var(--accent); border-radius: 50%; cursor: pointer; box-shadow: 0 0 8px rgba(0,102,204,0.4); }
+        .range-value { font-size: 2.8rem; font-family: 'Syne', sans-serif; color: var(--text-primary); font-weight: 800; margin-top: 15px; line-height: 1; }
+        .range-value span { font-size: 1.2rem; color: var(--text-secondary); font-weight: 500; }
+
+        .wizard-controls { display: flex; justify-content: space-between; margin-top: 30px; }
+        .result-box { text-align: center; padding: 15px 0; }
+        .result-box i { font-size: 4rem; color: #10b981; margin-bottom: 15px; }
+        .final-price { font-size: 3.2rem; font-family: 'Syne'; color: var(--accent); margin: 10px 0; font-weight: 800; line-height: 1; }
+
+        @media (min-width: 480px) { .options-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+        @media (min-width: 768px) { .wizard-container { padding: 40px; } .range-value { font-size: 3.8rem; } }
+        @media (min-width: 992px) { .estimator-wrapper { flex-direction: row; align-items: center; } .estimator-info, .wizard-container { flex: 1; } }
+
+        /* ==========================================================================
+           10. FOOTER
+           ========================================================================== */
+        footer { background: var(--bg-secondary); padding: 60px 5% 30px; border-top: 1px solid var(--border); position: relative; overflow: hidden; transition: background-color 0.4s ease, border-color 0.4s ease; }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 1440px; margin: 0 auto; }
+        .footer-col { text-align: center; }
+        .footer-col p { font-size: 0.9rem; color: var(--text-secondary); max-width: 400px; margin-inline: auto; margin-top: 15px; }
+        .footer-col h4 { font-size: 1.1rem; margin-bottom: 18px; color: var(--text-primary); text-transform: uppercase; letter-spacing: 1px; }
+        .footer-col ul li { margin-bottom: 10px; font-size: 0.9rem; }
+        .footer-col ul li a { color: var(--text-secondary); transition: var(--transition-fast); display: inline-flex; align-items: center; gap: 6px; }
+        .footer-col ul li a:hover { color: var(--accent); transform: translateX(3px); }
+        
+        .social-links { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
+        .social-links a { width: 38px; height: 38px; border-radius: 50%; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; color: var(--text-primary); transition: var(--transition-fast); border: 1px solid var(--border); }
+        .social-links a:hover { background: var(--accent); color: #fff; transform: translateY(-3px); }
+
+        .footer-bottom { max-width: 1440px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .footer-bottom p { font-size: 0.8rem; color: var(--text-secondary); }
+
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: repeat(3, 1fr); text-align: left; }
+            .footer-col { text-align: left; }
+            .footer-col p { margin-inline: 0; }
+            .social-links { justify-content: flex-start; }
+            .footer-bottom { flex-direction: row; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="loader-brand">
+            <h2 style="font-size: 2rem; color: var(--accent);">PROLINE</h2>
+        </div>
+        <div class="loader-bar">
+            <div class="loader-fill"></div>
+        </div>
+    </div>
+
+    <div class="color-blob blob-1"></div>
+    <div class="color-blob blob-2"></div>
+
+    <header id="header">
+        <a href="#" class="logo-container" aria-label="Home">
+            <img src="1000082144_2.jpg" alt="Logo">
+            <span class="logo-text">Proline <span>Painting</span></span>
+        </a>
+        
+        <div class="nav-tools">
+            <a href="tel:8436830854" class="phone-header"><i class="fa-solid fa-phone"></i> (843) 683-0854</a>
+            <button class="theme-toggle" id="theme-btn" aria-label="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button class="menu-btn" id="menu-btn">
+                <i class="fa-solid fa-bars"></i> Menu
+            </button>
+        </div>
+    </header>
+
+    <nav class="fullscreen-menu" id="fs-menu">
+        <div class="menu-items">
+            <a href="#" class="menu-link" onclick="toggleMenu()">Home</a>
+            <a href="#services" class="menu-link" onclick="toggleMenu()">Services</a>
+            <a href="#gallery" class="menu-link" onclick="toggleMenu()">Project Gallery</a>
+            <a href="#videos" class="menu-link" onclick="toggleMenu()">Video Showcase</a>
+            <a href="#estimator" class="menu-link" onclick="toggleMenu()">Smart Estimator</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-text reveal-on-scroll">
+                <div class="badge"><i class="fa-solid fa-medal"></i> Top Rated in Bluffton, SC</div>
+                <h1>Precision Finishes For <br><span class="type-wrap" id="typewriter"></span></h1>
+                <p>Specializing in architectural high-end paint systems and Level 5 drywall engineering. Residential & Commercial. Free Estimates. 100% Satisfaction Guaranteed.</p>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%;">
+                    <a href="#estimator" class="btn-primary">Calculate Estimate <i class="fa-solid fa-calculator"></i></a>
+                    <a href="#gallery" class="btn-outline">View Gallery <i class="fa-solid fa-camera"></i></a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h4>15+</h4>
+                        <p>Years Experience</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>500+</h4>
+                        <p>Projects Done</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>100%</h4>
+                        <p>Quality Rating</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual reveal-on-scroll">
+                <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&q=80" alt="Architectural Finishes Professional Construction" class="hero-img">
+                <div class="experience-badge">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <div>
+                        <h5>Licensed & Insured</h5>
+                        <p>Absolute Client Protection</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section-padding">
+        <div class="section-header reveal-on-scroll">
+            <h2>Capabilities & <span>Services</span></h2>
+            <p>Explore our architectural capabilities. From elite level 5 drywall finishes to long-range exterior weatherproof shield coatings.</p>
+        </div>
+        <div class="bento-grid">
+            
+            <div class="bento-item span-2-row span-2-col-md reveal-on-scroll" style="background: linear-gradient(rgba(15,23,42,0.05), rgba(15,23,42,0.05)), url('https://images.unsplash.com/photo-1562975031-fb71119de72f?auto=format&fit=crop&q=80'); background-size: cover; background-position: center; color: var(--text-primary);">
+                <div class="bento-icon" style="background: var(--bg-secondary);"><i class="fa-solid fa-paint-roller"></i></div>
+                <h3>High-End Interior Coatings</h3>
+                <p>Premium architectural multi-coat application tailored for custom custom trims, high ceilings, and luxury wall elements.</p>
+                <ul class="service-list">
+                    <li><i class="fa-solid fa-circle"></i> Accent Walls</li>
+                    <li><i class="fa-solid fa-circle"></i> Trim & Millwork</li>
+                    <li><i class="fa-solid fa-circle"></i> Ceiling Architecture</li>
+                    <li><i class="fa-solid fa-circle"></i> Fine Finish Enamels</li>
+                </ul>
+            </div>
+
+            <div class="bento-item span-2-col-md reveal-on-scroll">
+                <div class="bento-icon"><i class="fa-solid fa-border-all"></i></div>
+                <h3>Level 5 Drywall Engineering</h3>
+                <p>Flawless sheetrock installation, critical mechanical skimming, joint compound integration, stress crack remediation, and invisible texture blending.</p>
+            </div>
+
+            <div class="bento-item span-2-col-md span-2-col reveal-on-scroll">
+                <div class="bento-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+                <h3>Popcorn Ceiling Removal</h3>
+                <p>Modernize your home. We safely scrape old acoustical textures, resurface the raw drywall, and apply a clean, flat finish or custom knockdown texture.</p>
+            </div>
+
+            <div class="bento-item span-2-col-md span-2-col reveal-on-scroll">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80" class="bento-img" alt="Exterior Paint">
+                <div class="bento-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                <h3>Exterior Shield Coatings</h3>
+                <p>Elastomeric coatings, full exterior house painting, and weatherproofing setups designed specifically to endure intense Southern UV exposure and coastal moisture.</p>
+            </div>
+            
+            <div class="bento-item reveal-on-scroll">
+                <div class="bento-icon"><i class="fa-solid fa-spray-can-sparkles"></i></div>
+                <h3>Cabinet Refinishing</h3>
+                <p>Ultra-smooth factory-grade urethane spray application for kitchens and vanities.</p>
+            </div>
+
+            <div class="bento-item span-2-col-md span-2-col reveal-on-scroll">
+                <div class="bento-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+                <h3>Baseboard & Trim Installation</h3>
+                <p>Precision carpentry services. We measure, cut, install, caulk, and paint baseboards, crown molding, and custom wainscoting to elevate your space.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="gallery" class="section-padding" style="background: var(--bg-tertiary);">
+        <div class="section-header reveal-on-scroll">
+            <h2>Project <span>Gallery</span></h2>
+            <p>Explore our completed works. Review our quality craftsmanship across interior treatments, exterior shield systems, and structural enhancements. Click to expand image.</p>
+        </div>
+        
+        <div class="filter-container reveal-on-scroll">
+            <button class="filter-btn active" data-filter="all">All Work</button>
+            <button class="filter-btn" data-filter="interior">Interior</button>
+            <button class="filter-btn" data-filter="exterior">Exterior</button>
+            <button class="filter-btn" data-filter="drywall">Drywall</button>
+        </div>
+
+        <div class="gallery-grid id-target-wrapper reveal-on-scroll" id="gallery-container">
+            
+            <div class="gallery-item" data-category="interior">
+                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80" alt="Luxury Living Room" loading="lazy">
+                <div class="gallery-overlay">
+                    <h4>Luxury Living Space</h4>
+                    <p>Interior Multi-Coat Architecture</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="drywall">
+                <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&q=80" alt="Level 5 Drywall" loading="lazy">
+                <div class="gallery-overlay">
+                    <h4>Level 5 Smooth Wall</h4>
+                    <p>Drywall Skimming Integration</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="exterior">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80" alt="Coastal Exterior Estate" loading="lazy">
+                <div class="gallery-overlay">
+                    <h4>Coastal Exterior Estate</h4>
+                    <p>Elastomeric UV Protective Coating</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="interior">
+                <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&q=80" alt="Cabinet Spray Finish" loading="lazy">
+                <div class="gallery-overlay">
+                    <h4>Gourmet Kitchen Profiles</h4>
+                    <p>Urethane Cabinet Spraying</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="drywall">
+                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80" alt="Ceiling Renovation" loading="lazy">
+                <div class="gallery-overlay">
+                    <h4>Acoustical Remodeling</h4>
+                    <p>Popcorn Removal & Ceiling Structural Refinishing</p>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-category="exterior">
+                <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80" alt="Modern Residential Exterior" loading="lazy">
+                <div class="gallery-overlay">
+                    <h4>Modern Structural Siding</h4>
+                    <p>Weather-Shield Overlays</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" src="" alt="High resolution project closeup viewport">
+    </div>
+
+    <section id="videos" class="section-padding" style="background: var(--bg-secondary); border-top: 1px solid var(--border);">
+        <div class="section-header reveal-on-scroll">
+            <h2>Process <span>Showcase</span></h2>
+            <p>Observe our technical workflows in action. We deliver clean execution and professional field methodology across all job sites.</p>
+        </div>
+        <div class="carousel-outer-wrapper reveal-on-scroll">
+            <button class="carousel-control-arrow left-arrow" id="carousel-left-trigger" aria-label="Scroll left"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="video-carousel" id="video-carousel-track">
+                
+                <div class="video-card">
+                    <div class="video-thumbnail-container">
+                        <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&q=80" alt="Level 5 Drywall" class="video-thumb-img" loading="lazy">
+                        <a href="#" target="_blank" class="youtube-redirect-btn" aria-label="Play Level 5 Drywall Prep Video on YouTube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                    <div class="video-description-box">
+                        <h3>Level 5 Drywall Engineering</h3>
+                        <p>Complete project breakdown displaying advanced compound skimming, mechanical taping, and flawless joint integration before coating application.</p>
+                    </div>
+                </div>
+
+                <div class="video-card">
+                    <div class="video-thumbnail-container">
+                        <img src="https://images.unsplash.com/photo-1562975031-fb71119de72f?auto=format&fit=crop&q=80" alt="High-End Spraying Systems" class="video-thumb-img" loading="lazy">
+                        <a href="#" target="_blank" class="youtube-redirect-btn" aria-label="Play Spraying Systems Video on YouTube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                    <div class="video-description-box">
+                        <h3>Precision Spray Application</h3>
+                        <p>A comprehensive walkthrough detailing factory-grade urethane coating dispersion across architectural custom kitchen profiles and structural trim matrix arrays.</p>
+                    </div>
+                </div>
+
+            </div>
+            <button class="carousel-control-arrow right-arrow" id="carousel-right-trigger" aria-label="Scroll right"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <section id="estimator" class="section-padding" style="background: var(--bg-tertiary); border-top: 1px solid var(--border);">
+        <div class="section-padding estimator-wrapper">
+            
+            <div class="estimator-info reveal-on-scroll">
+                <h2>Smart Project <span>Estimator</span></h2>
+                <p>Utilize our specialized configuration wizard to unlock baseline investment metrics instantly. Our dynamic engine calculates costs based on current material prices and engineering requirements.</p>
+                <ul class="check-list">
+                    <li><i class="fa-solid fa-check"></i> Includes standard prep & materials</li>
+                    <li><i class="fa-solid fa-check"></i> Instant algorithmic calculation</li>
+                    <li><i class="fa-solid fa-check"></i> No hidden fee structure</li>
+                    <li><i class="fa-solid fa-check"></i> Free on-site verification available</li>
+                </ul>
+            </div>
+
+            <div class="wizard-container reveal-on-scroll">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                
+                <div class="wizard-step active" id="step1">
+                    <h4 style="font-size: 1.1rem; margin-bottom: 5px; color: var(--accent);">Step 1 of 3</h4>
+                    <h3 style="font-size: 1.6rem; margin-bottom: 20px;">Select Core Service</h3>
+                    <div class="options-grid" id="options-grid-step1">
+                        <div class="option-card" data-val="2.80" onclick="selectOption(this)">
+                            <i class="fa-solid fa-sheet-plastic"></i>
+                            <h4>Drywall Hanging</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top:6px;">Base: $2.80 / sqft</p>
+                        </div>
+                        <div class="option-card" data-val="3.50" onclick="selectOption(this)">
+                            <i class="fa-solid fa-fill-drip"></i>
+                            <h4>Interior Walls</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top:8px;">Base: $3.50 / sqft</p>
+                        </div>
+                        <div class="option-card" data-val="4.20" onclick="selectOption(this)">
+                            <i class="fa-solid fa-house-chimney"></i>
+                            <h4>Exterior Coating</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top:8px;">Base: $4.20 / sqft</p>
+                        </div>
+                        <div class="option-card" data-val="5.50" onclick="selectOption(this)">
+                            <i class="fa-solid fa-spray-can"></i>
+                            <h4>Fine Spraying</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top:8px;">Base: $5.50 / sqft</p>
+                        </div>
+                    </div>
+                    <div class="wizard-controls" style="justify-content: flex-end;">
+                        <button class="btn-primary" onclick="validateStep1ToStep2()">Next Step <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="wizard-step" id="step2">
+                    <h4 style="font-size: 1.1rem; margin-bottom: 5px; color: var(--accent);">Step 2 of 3</h4>
+                    <h3 style="font-size: 1.6rem; margin-bottom: 10px;">Specify Total Area</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px;">Drag the slider to adjust your required project surface dimensions.</p>
+                    <div class="slider-box">
+                        <input type="range" id="areaRange" min="500" max="5000" step="50" value="1500" oninput="document.getElementById('areaOutput').textContent = this.value">
+                        <div class="range-value"><span id="areaOutput">1500</span> <span>sqft</span></div>
+                    </div>
+                    <div class="wizard-controls">
+                        <button class="btn-outline" onclick="nextStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button class="btn-primary" onclick="calculateFinal()">Calculate Total <i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                    </div>
+                </div>
+
+                <div class="wizard-step" id="step3">
+                    <h4 style="font-size: 1.1rem; margin-bottom: 5px; color: var(--accent);">Step 3 of 3</h4>
+                    <div class="result-box">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <h3>Estimated Investment</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 5px;">This algorithmic projection factors in surface prep, paint matrices, and structural labor.</p>
+                        <div class="final-price" id="finalPrice">~ $0</div>
+                        <button class="btn-outline" onclick="nextStep(1)" style="margin-top: 15px;"><i class="fa-solid fa-rotate-left"></i> Start Over</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <a href="#" class="logo-container" style="justify-content: center; margin-bottom: 15px;">
+                    <span class="logo-text">Proline <span>Painting</span></span>
+                </a>
+                <p>Architectural Drywall & Coatings engineered to elevate human environments. Precision work, every time. Locally Owned & Operated.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="Houzz"><i class="fa-brands fa-houzz"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Core Services</h4>
+                <ul>
+                    <li><a href="#services">Interior & Exterior Paint</a></li>
+                    <li><a href="#services">Drywall & Sheetrock</a></li>
+                    <li><a href="#services">Cabinet Refinishing</a></li>
+                    <li><a href="#gallery">Project Portfolio</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact Info</h4>
+                <ul style="color: var(--text-secondary);">
+                    <li style="margin-bottom: 12px;"><i class="fa-solid fa-location-dot" style="color: var(--accent); margin-right:8px;"></i> Bluffton, SC & Surrounding Areas</li>
+                    <li style="margin-bottom: 12px;"><i class="fa-solid fa-phone" style="color: var(--accent); margin-right:8px;"></i> (843) 683-0854</li>
+                    <li style="margin-bottom: 12px;"><i class="fa-solid fa-envelope" style="color: var(--accent); margin-right:8px;"></i> info@prolinepainting.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Proline Painting & Drywall. All Architectural Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. OPTIMIZED PRELOADER ---
+        const preloader = document.getElementById('preloader');
+        const loaderFill = document.querySelector('.loader-fill');
+        let progressWidth = 0;
+        const loadTimer = setInterval(() => {
+            progressWidth += Math.floor(Math.random() * 25) + 10;
+            if (progressWidth >= 90) { progressWidth = 90; clearInterval(loadTimer); }
+            if(loaderFill) loaderFill.style.width = `${progressWidth}%`;
+        }, 80);
+
+        window.addEventListener('load', () => {
+            clearInterval(loadTimer);
+            if(loaderFill) loaderFill.style.width = '100%';
+            setTimeout(() => {
+                if(preloader) { preloader.style.opacity = '0'; preloader.style.visibility = 'hidden'; }
+                initTypewriter();
+            }, 300);
+        });
+
+        // --- 2. HEADER & THEMING ---
+        const header = document.getElementById('header');
+        const themeBtn = document.getElementById('theme-btn');
+        const htmlElement = document.documentElement;
+
+        window.addEventListener('scroll', () => {
+            if(header) header.classList.toggle('scrolled', window.scrollY > 50);
+        }, { passive: true });
+
+        const savedTheme = localStorage.getItem('proline_theme') || 'light';
+        htmlElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        if(themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('proline_theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
+
+        function updateThemeIcon(theme) {
+            if(!themeBtn) return;
+            themeBtn.innerHTML = theme === 'light' ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+        }
+
+        // --- 3. FULLSCREEN NAVIGATION ---
+        const menuBtn = document.getElementById('menu-btn');
+        const fsMenu = document.getElementById('fs-menu');
+        
+        function toggleMenu() {
+            if(!fsMenu || !menuBtn) return;
+            const isActive = fsMenu.classList.toggle('active');
+            menuBtn.innerHTML = isActive ? '<i class="fa-solid fa-xmark"></i> Close' : '<i class="fa-solid fa-bars"></i> Menu';
+            document.body.style.overflow = isActive ? 'hidden' : '';
+        }
+        if(menuBtn) menuBtn.addEventListener('click', toggleMenu);
+
+        // --- 4. HERO TYPEWRITER ---
+        const words = ["Homes.", "Businesses.", "Living Spaces.", "Interiors."];
+        let wordIdx = 0, charIdx = 0, isDeleting = false;
+        const targetEl = document.getElementById('typewriter');
+
+        function initTypewriter() {
+            if(!targetEl) return;
+            const currentWord = words[wordIdx];
+            targetEl.innerHTML = currentWord.substring(0, charIdx);
+            let strokeSpeed = isDeleting ? 60 : 120;
+            if (!isDeleting && charIdx === currentWord.length) { strokeSpeed = 2000; isDeleting = true; }
+            else if (isDeleting && charIdx === 0) { isDeleting = false; wordIdx = (wordIdx + 1) % words.length; strokeSpeed = 400; }
+            charIdx += isDeleting ? -1 : 1;
+            setTimeout(initTypewriter, strokeSpeed);
+        }
+
+        // --- 5. INTERSECTION OBSERVER ---
+        const scrollRevealItems = document.querySelectorAll('.reveal-on-scroll');
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
+            }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+            scrollRevealItems.forEach(item => observer.observe(item));
+        } else {
+            scrollRevealItems.forEach(item => item.classList.add('is-visible'));
+        }
+
+        // --- 6. VIDEO CAROUSEL ---
+        const carouselContainer = document.getElementById('video-carousel-track');
+        const leftArrowTrigger = document.getElementById('carousel-left-trigger');
+        const rightArrowTrigger = document.getElementById('carousel-right-trigger');
+
+        if(carouselContainer && leftArrowTrigger && rightArrowTrigger) {
+            leftArrowTrigger.addEventListener('click', () => {
+                const cardNode = carouselContainer.querySelector('.video-card');
+                if(cardNode) carouselContainer.scrollBy({ left: -(cardNode.offsetWidth + 20), behavior: 'smooth' });
+            });
+            rightArrowTrigger.addEventListener('click', () => {
+                const cardNode = carouselContainer.querySelector('.video-card');
+                if(cardNode) carouselContainer.scrollBy({ left: (cardNode.offsetWidth + 20), behavior: 'smooth' });
+            });
+        }
+
+        // --- 7. FILTER GALLERY & LIGHTBOX ---
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filterValue = btn.getAttribute('data-filter');
+                
+                galleryItems.forEach(item => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                            item.classList.remove('hide');
+                            setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 50);
+                        } else {
+                            item.classList.add('hide');
+                        }
+                    }, 350);
+                });
+            });
+        });
+
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const galleryTarget = document.getElementById('gallery-container');
+
+        if(galleryTarget && lightbox && lightboxImg && lightboxClose) {
+            galleryTarget.addEventListener('click', (e) => {
+                const item = e.target.closest('.gallery-item');
+                if(!item) return;
+                lightboxImg.setAttribute('src', item.querySelector('img').getAttribute('src'));
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            const exitLightbox = () => { lightbox.classList.remove('active'); document.body.style.overflow = ''; };
+            lightboxClose.addEventListener('click', exitLightbox);
+            lightbox.addEventListener('click', (e) => { if(e.target === lightbox) exitLightbox(); });
+        }
+
+        // --- 8. ESTIMATOR WIZARD ---
+        let selectedRate = 0;
+        function selectOption(element) {
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedRate = parseFloat(element.getAttribute('data-val'));
+        }
+
+        function validateStep1ToStep2() {
+            if(selectedRate > 0) nextStep(2);
+            else {
+                const grid = document.getElementById('options-grid-step1');
+                if(grid) {
+                    grid.style.transform = 'translateX(5px)';
+                    setTimeout(() => grid.style.transform = 'translateX(-5px)', 80);
+                    setTimeout(() => grid.style.transform = 'translateX(0)', 160);
+                }
+            }
+        }
+
+        function nextStep(step) {
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            const stepNode = document.getElementById(`step${step}`);
+            if(stepNode) stepNode.classList.add('active');
+            
+            const fillNode = document.getElementById('progressFill');
+            if(fillNode) fillNode.style.width = `${(step / 3) * 100}%`;
+            
+            if(step === 1) {
+                selectedRate = 0;
+                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                const rangeInput = document.getElementById('areaRange');
+                if(rangeInput) {
+                    rangeInput.value = 1500;
+                    document.getElementById('areaOutput').textContent = 1500;
+                }
+            }
+        }
+
+        function calculateFinal() {
+            const rangeInput = document.getElementById('areaRange');
+            if(!rangeInput) return;
+            const total = ((selectedRate * parseFloat(rangeInput.value)) * 1.10).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+            
+            const priceNode = document.getElementById('finalPrice');
+            if(priceNode) priceNode.innerText = "Calculating...";
+            nextStep(3);
+            setTimeout(() => { if(priceNode) priceNode.innerHTML = `~ $${total}`; }, 800);
+        }
+    </script>
+</body>
+</html>
